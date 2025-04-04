@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modification d'un article{% endblock %}
+
+{% block header %}Modification{% endblock %}
+
+{% block body %}
+
+<div id="add_article_form" class="row mt-4 mb-5 mx-auto">
+
+  {{ form_start( article_edit_form ) }}
+
+  {{ form_errors( article_edit_form ) }}
+
+  {{ form_row( article_edit_form.title ) }}
+
+  {{ form_row( article_edit_form.price ) }}
+
+  <p class="text-light text-center">Type d'article *</p>
+
+  {{ form_row( article_edit_form.type ) }}
+
+  <p class="text-light text-center">Photos *</p>
+
+  {{ form_row( article_edit_form.images, {'attr': {'class': 'file-upload'}}) }}
+
+  {{ form_row( article_edit_form.save ) }}
+
+  {{ form_end( article_edit_form ) }}
+
+</div>
+
+{% endblock %}

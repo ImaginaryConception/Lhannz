@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demande{% endblock %}
+{% block header %}Demande{% endblock %}
+
+{% block body %}
+
+  <div class="mt-4"></div>
+
+  {{ form_start( add_demande_form ) }}
+
+  {{ form_row( add_demande_form.message ) }}
+
+	<p class="text-light text-center">Photos *</p>
+
+	{{ form_row( add_demande_form.images, {'attr': {'class': 'file-upload'}}) }}
+
+  <p class="text-center fs-5 col-10 mx-auto col-lg-6 text-light">Les tableaux sont créés sur-mesure en fonction de vos préférences et de votre description. Décrivez-nous le tableau que vous souhaitez acheter et il sera créé pour vous. Vous pouvez aussi envoyer des images pour donner une idée de ce que vous voulez.</p>
+
+  {{ form_errors( add_demande_form ) }}
+
+  {{ form_row( add_demande_form.save ) }}
+
+  {{ form_end( add_demande_form ) }}
+
+{% endblock %}

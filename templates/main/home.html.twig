@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil
+{% endblock %}
+
+{% block body %}
+	<div class="row col-12 text-center">
+
+		<div class="mx-auto mt-3">
+
+			<div class="mx-auto d-flex flex-column mb-5 justify-content-center">
+				<p class="fs-3 crea mx-auto text-center text-light w-75">Création Art</p>
+				<div>
+					<a class="link" href="{{ path('add_request') }}">Faire une demande</a>
+				</div>
+			</div>
+
+			<div
+				class="ms-5 mt-5 d-flex justify-content-center">
+				<!-- Première colonne -->
+				<div class="column">
+					<a href="{{ path('abstrait') }}" class="abstrait">
+						<img src="{{ asset('Images/Tableaux/104.jpg') }}" class="image_style3 img-fluid">
+						<p>ABSTRAIT</p>
+					</a>
+					<a href="{{ path('resine') }}" class="resine">
+						<img src="{{ asset('Images/Tableaux/101.jpg') }}" class="image_style3 img-fluid">
+						<p>RÉSINE</p>
+					</a>
+				</div>
+
+				<!-- Deuxième colonne -->
+				<div class="column">
+					<a href="{{ path('paysage') }}" class="paysage">
+						<img src="{{ asset('Images/Tableaux/26.jpg') }}" class="image_style3 img-fluid">
+						<p>PAYSAGE</p>
+					</a>
+					<a href="{{ path('prenom') }}" class="prenom">
+						<img src="{{ asset('Images/Tableaux/10.jpg') }}" class="image_style3 img-fluid">
+						<p>PRÉNOM</p>
+					</a>
+				</div>
+			</div>
+
+			<div
+				class="ms-5 mt-5 d-flex justify-content-center">
+				<!-- Troisième colonne -->
+				<div class="column">
+					<a href="{{ path('enfant') }}" class="enfant">
+						<img src="{{ asset('Images/Tableaux/107.png') }}" class="image_style3 img-fluid">
+						<p>ENFANT</p>
+					</a>
+					<a href="{{ path('coque') }}" class="coque">
+						<img src="{{ asset('Images/Tableaux/103.jpg') }}" class="image_style3 img-fluid">
+						<p>COQUE</p>
+					</a>
+				</div>
+
+				<!-- Quatrième colonne -->
+				<div class="column">
+					<a href="{{ path('logo') }}" class="logo">
+						<img src="{{ asset('Images/Tableaux/105.jpg') }}" class="image_style3 img-fluid">
+						<p>LOGO</p>
+					</a>
+					<a href="{{ path('minimaliste') }}" class="minimaliste">
+						<img src="{{ asset('Images/Tableaux/102.jpg') }}" class="image_style3 img-fluid">
+						<p>MINIMALISTE</p>
+					</a>
+				</div>
+			</div>
+
+			<div
+				class="ms-5 mt-5 d-flex justify-content-center">
+				<!-- Cinquième colonne -->
+				<div class="column">
+					<a href="{{ path('calligraphie') }}" class="calligraphie">
+						<img src="{{ asset('Images/Tableaux/50.jpg') }}" class="image_style3 img-fluid">
+						<p>CALLIGRAPHIE</p>
+					</a>
+				</div>
+			</div>
+
+
+			{% for annonce in annonces %}
+
+				<div class="row mt-4 d-flex justify-content-center">
+
+					<div id="global" class="w-80">
+
+						<div id="gauche">
+							<div class="mb-4">
+								<img class="img-fluid image_style" src="{{ asset('Images/Annonces/' ~ annonce.image) }}" alt="">
+							</div>
+						</div>
+
+						<div id="droite">
+							<p class="text-light fs-2">{{ annonce.title|nl2br }}</p>
+							<p class="text-light">{{ annonce.message|nl2br }}</p>
+						</div>
+
+						<div class="d-flex flex-column mx-auto mt-5 flex-md-row mb-3">
+
+							{% if is_granted('ROLE_ADMIN') %}
+
+								<div class="mx-auto d-flex justify-content-center flex-column">
+
+									<div class="d-flex flex-row mx-auto flex-md-row mb-3">
+
+										<a href="{{ path('edit_annonce', {'id': annonce.id}) }}" class="link ms-1 me-4 text-decoration-none">Modifier</a>
+
+										<a href="{{ path('delete_annonce', {'id': annonce.id, csrf_token: csrf_token('delete_annonce_' ~ annonce.id ) }) }}" class="link ms-1 text-decoration-none">Supprimer</a>
+
+									</div>
+
+								</div>
+
+
+							{% endif %}
+
+						</div>
+
+					</div>
+
+				</div>
+
+			{% endfor %}
+
+		</div>
+
+	</div>
+
+	<p class="fs-7 mx-auto text-center text-light w-75">Peint à la main selon vos souhaits en taille, couleurs et modèles.</p>
+
+	<div class="mb-6"></div>
+
+{% endblock %}

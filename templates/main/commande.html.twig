@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande{% endblock %}
+
+{% block header %}Commande{% endblock %}
+
+{% block body %}
+
+  <div class="d-flex justify-content-center my-5" id="btn-row">
+    <a class="link" href="{{ path('home') }}"><i class="fa-solid fa-xmark me-2"></i>Annuler</a>
+    <a class="link" href="{{ path('commandeExec', {'id': article.id, 'userId' : user.id }) }}"><i class="fa-solid fa-check me-2"></i>Confirmer</a>
+  </div>
+  <div>
+    {# <p class="text-light text-center">Attention, vous allez recevoir un mail vous indiquant que la réservation a été confirmée ou déclinée, cependant, il se peut que le mail finisse dans les spams, vérifiez vos mails indésirables!</p> #}
+  </div>
+{% endblock %}

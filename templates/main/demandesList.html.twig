@@ -1,0 +1,186 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes
+{% endblock %}
+{% block header %}Demandes
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+
+		<div class="col-12 col-md-8 mx-auto">
+
+			<div id="global-view" class="row">
+
+				{% set sliderCounter = 1 %}
+
+				{% for proposition_jeu in propositions_jeux %}
+
+					<div id="view-list" class="row mx-auto">
+
+						<div class="d-flex flex-lg-row flex-column mt-5 justify-content-center">
+							<p class="text-light p-2 text-break text-center bg-black6">
+								{% if proposition_jeu.message is not null %}
+									<span class="fw-bold">Demande</span><br>
+									{{ proposition_jeu.message }}
+								{% else %}
+									<span class="fw-bold">Message non renseigné</span><br>
+								{% endif %}
+							</p>
+						</div>
+
+						{% if proposition_jeu.status == 'Status: en cours de création.' %}
+
+							<div id="carouselExampleControls-{{ sliderCounter }}" class="carousel slide" data-bs-ride="carousel">
+								<div class="carousel-inner">
+									{% for index, image in proposition_jeu.images %}
+										<div class="carousel-item {% if index == 0 %}active{% endif %}">
+											<img class="img-fluid image_style" src="{{ asset('Images/DemandeClient/' ~ image) }}">
+										</div>
+									{% else %}
+										<p class="text-light text-center mx-auto">Le client n'a pas envoyé d'images.</p>
+									{% endfor %}
+								</div>
+								<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Précédent</span>
+								</button>
+								<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Suivant</span>
+								</button>
+							</div>
+							{% set sliderCounter = sliderCounter + 1 %}
+
+							<p class="text-light col-10 mx-auto fs-6 text-center">Une fois que vous aurez effectué ce que le client a demandé, vous pourrez le confirmer en cliquant sur
+								<span class="text-warning">"Confirmer"</span>
+							</p>
+
+							<div class="button_adm2 d-flex flex-column mx-auto flex-md-row mb-3">
+								<a class="link mx-auto" href="{{ path('confirm_demande', {'id': proposition_jeu.id }) }}">
+									<i class="fa-solid fa-check me-1"></i>Confirmer</a>
+							</div>
+
+						{% elseif proposition_jeu.status == 'Status: prêt, en attente de votre paiement.' %}
+
+							<div id="carouselExampleControls-{{ sliderCounter }}" class="carousel slide" data-bs-ride="carousel">
+								<div class="carousel-inner">
+									{% for index, image in proposition_jeu.images %}
+										<div class="carousel-item {% if index == 0 %}active{% endif %}">
+											<img class="img-fluid image_style" src="{{ asset('Images/Demandes/' ~ image) }}">
+										</div>
+									{% else %}
+										<p class="text-light text-center mx-auto">Vous n'avez pas envoyé d'images.</p>
+									{% endfor %}
+								</div>
+								<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Précédent</span>
+								</button>
+								<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Suivant</span>
+								</button>
+							</div>
+							{% set sliderCounter = sliderCounter + 1 %}
+
+							<div class="d-flex flex-lg-row flex-column justify-content-center">
+								<p class="text-light p-2 text-break text-center bg-black6">
+									<span class="fw-bold">Prix:</span>
+									{{ proposition_jeu.price }}€
+								</p>
+							</div>
+
+							<p class="text-light text-center mx-auto">Voici les informations du client:</p>
+
+							<div class="mb-4 d-flex w-75 flex-column justify-content-center mx-auto">
+								<p class="text-center text-light fs-5 w-75 mx-auto">
+									<span class="fw-bold">Adresse e-mail:</span><br>{{ proposition_jeu.author.email }}</p>
+								<p class="text-center text-light fs-5 w-75 mx-auto">
+									<span class="fw-bold">Prénom:</span><br>{{ proposition_jeu.author.firstname }}</p>
+								<p class="text-center text-light fs-5 w-75 mx-auto">
+									<span class="fw-bold">Nom:</span><br>{{ proposition_jeu.author.lastname }}</p>
+								<p class="text-center text-light fs-5 w-75 mx-auto">
+									<span class="fw-bold">Adresse postale:</span><br>{{ proposition_jeu.author.adress }}</p>
+								<p class="text-center text-light fs-5 w-75 mx-auto">
+									<span class="fw-bold">Code postal:</span><br>{{ proposition_jeu.author.postalcode }}</p>
+								<p class="text-center text-light fs-5 w-75 mx-auto">
+									<span class="fw-bold">Ville:</span><br>{{ proposition_jeu.author.city }}</p>
+							</div>
+
+							<div class="mb-5 d-flex flex-column justify-content-center mx-auto flex-xl-row mb-3">
+								<a class="link mx-xxl-0 me-xxl-4 mx-auto" href="{{ path('confirm2', {'id': proposition_jeu.id, csrf_token: csrf_token('confirm_demande_' ~ proposition_jeu.id ) }) }}">
+									<i class="fa-solid fa-circle-check me-1"></i>Confirmer l'envoi</a>
+								<a class="link mx-xxl-0 me-xxl-4 mx-auto" href="{{ path('manquement2', {'id': proposition_jeu.id, csrf_token: csrf_token('manquement_demande_' ~ proposition_jeu.id ) }) }}">
+									<i class="fa-solid fa-xmark me-1"></i>Le paiement n'est pas complet</a>
+								<a class="link mx-xxl-0 mx-auto" href="{{ path('annulation2', {'id': proposition_jeu.id, csrf_token: csrf_token('annulation_demande_' ~ proposition_jeu.id ) }) }}">
+									<i class="fa-solid fa-xmark me-1"></i>Annuler la commande</a>
+							</div>
+
+						{% elseif proposition_jeu.status == 'Status: Payé.' %}
+
+							<p class="text-center text-warning fs-5 bg-black4 w-75 mx-auto fw-bold">Nous vous informerons ici dès que nous recevrons la confirmation de réception du colis de la part du client.</p>
+
+						{% elseif proposition_jeu.status == 'Status: Reçu.' %}
+
+							<div id="carouselExampleControls-{{ sliderCounter }}" class="carousel slide" data-bs-ride="carousel">
+								<div class="carousel-inner">
+									{% for index, image in proposition_jeu.images %}
+										<div class="carousel-item {% if index == 0 %}active{% endif %}">
+											<img class="img-fluid image_style" src="{{ asset('Images/Demandes/' ~ image) }}">
+										</div>
+									{% else %}
+										<p class="text-light text-center mx-auto">Vous n'avez pas envoyé d'images.</p>
+									{% endfor %}
+								</div>
+								<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Précédent</span>
+								</button>
+								<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Suivant</span>
+								</button>
+							</div>
+							{% set sliderCounter = sliderCounter + 1 %}
+
+							<p class="text-center text-success fs-5 bg-black4 w-50 mx-auto fw-bold">Le client a confirmé la réception du colis.</p>
+
+						{% elseif proposition_jeu.status == 'Status: Paiement incomplet.' %}
+
+							<p class="text-center mx-auto w-75 text-light fw-bold p-1" style="font-size: 1rem;">Le client a été informé que le paiement qu'il a effectué n'est pas complet. Une fois le paiement complété, vous pourrez cliquer sur le bouton
+								<span class="text-warning">"Confirmer l'envoi"</span>
+								pour procéder à l'expédition du colis. Si le paiement n'est pas complété dans les délais impartis, vous pourrez annuler la commande en cliquant sur le bouton
+								<span class="text-warning">"Annuler la commande"</span>.</p>
+
+							<div class="mb-4 d-flex flex-column justify-content-center mx-auto flex-md-row mb-3">
+								<a class="link" href="{{ path('confirm2', {'id': proposition_jeu.id, csrf_token: csrf_token('confirm_demande_' ~ proposition_jeu.id ) }) }}">
+									<i class="fa-solid fa-circle-check me-1"></i>Confirmer l'envoi</a>
+								<a class="link" href="{{ path('annulation2', {'id': proposition_jeu.id, csrf_token: csrf_token('annulation_demande_' ~ proposition_jeu.id ) }) }}">
+									<i class="fa-solid fa-xmark me-1"></i>Annuler la commande</a>
+							</div>
+
+						{% elseif proposition_jeu.status == 'Status: Annulé.' %}
+
+							<p class="text-center text-danger fs-5 bg-black4 w-25 mx-auto fw-bold">La commande a été annulée.</p>
+
+						{% endif %}
+
+					</div>
+
+					<hr class="text-center text-black w-25 mx-auto">
+
+			{% else %}
+
+				</div>
+
+				<div class="row">
+					<p class="no-my_game.article my-5 col-12 text-center text-light bg-none">Aucune demande en cours.</p>
+				</div>
+
+			{% endfor %}
+
+		</div>
+	</div>
+{% endblock %}

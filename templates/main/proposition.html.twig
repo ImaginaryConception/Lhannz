@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles
+{% endblock %}
+{% block header %}Articles
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+		<p class="col-12 mt-5 nb-article text-light text-center">Total d'articles :
+			{{ articles.getTotalItemCount() }}</p>
+	</div>
+
+	{% if articles is not empty %}
+
+		<div class="row">
+
+			<div class="col-12 text-center">
+
+				<div class="search-form flex-row d-flex mx-auto justify-content-center">
+					<form method="GET" action="{{ path('article_search') }}" class="search-box d-flex flex-row">
+						<input id="search-book-first" type="text" placeholder="Rechercher" name="search" aria-label="search" class="form-control">
+						<button type="submit" class="bg-black3 ms-4 mt-5">
+							<i class="fs-2 ms-5 text-light fa-solid fa-magnifying-glass"></i>
+						</button>
+					</form>
+				</div>
+				<div class="mx-auto d-inline-block d-none my-4 p-2" id="search-overlay-library-first">
+					<p class="text-light my-auto">Recherche possible par
+						<span class="italic fw-bold">titre</span>
+						et
+						<span class="italic fw-bold">prix</span>.</p>
+				</div>
+
+			</div>
+
+		</div>
+
+	{% endif %}
+
+	<div class="d-flex bg-black4 w-31 mx-auto flex-column text-center justify-content-center mt-4">
+		<a class="link" href="{{ path('tableaux') }}">Tableaux</a>
+		{# <div class="mt-3"></div>
+		<a class="link" href="{{ path('boites') }}">Boîtes</a> #}
+	</div>
+
+{% endblock %}

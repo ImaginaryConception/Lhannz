@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+{% block header %}Inscription{% endblock %}
+
+{% block body %}
+
+    <div class="mt-6"></div>
+
+    {{ form_start(registrationForm) }}
+
+    {{ form_row(registrationForm.email) }}
+
+    {{ form_row(registrationForm.firstname) }}
+
+    {{ form_row(registrationForm.lastname) }}
+
+    {{ form_row(registrationForm.adress) }}
+
+    {{ form_row(registrationForm.postalcode) }}
+
+    {{ form_row(registrationForm.city) }}
+
+    <p class="text-center text-light fs-5">L'utilisation de votre nom, prénom et adresse sera nécessaire pour effectuer les livraisons.</p>
+
+    {{ form_row(registrationForm.plainPassword) }}
+
+    {{ form_errors( registrationForm ) }}
+
+    {{ form_row(registrationForm.save) }}
+
+    {{ form_end(registrationForm) }}
+
+{% endblock %}

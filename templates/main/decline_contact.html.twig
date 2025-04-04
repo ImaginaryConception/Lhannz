@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Refuser la commande{% endblock %}
+{% block header %}Refuser{% endblock %}
+
+{% block body %}
+
+  <div class="mt-4"></div>
+
+  {{ form_start( decline_form ) }}
+
+  {{ form_row( decline_form.reason) }}
+
+  <p class="text-light text-center">Informez le client, pourquoi la commande a-t-elle été refusée? Vous pouvez ignorer ce formulaire.</p>
+
+  {{ form_errors( decline_form ) }}
+
+  {{ form_row( decline_form.save ) }}
+
+  {{ form_end( decline_form ) }}
+
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Logo
+{% endblock %}
+
+{% block header %}Logo
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+
+		<div class="col-12 col-md-8 mx-auto">
+
+			<div class="row">
+				<p class="m-5 col-12 fs-6 text-center text-light bg-none">Les tableaux sont créés sur-mesure en fonction de vos préférences et de votre description. Décrivez-nous le tableau que vous souhaitez acheter
+					<a class="requestLink" href="{{ path('add_request') }}">ici</a>
+					et il sera créé pour vous.</p>
+			</div>
+
+			{% if articles is not empty %}
+
+				<div class="row">
+
+					<div class="col-12 text-center">
+
+						{# <div class="d-inline-block">
+							{{ knp_pagination_render(articles) }}
+						</div> #}
+
+						<div class="search-form flex-row d-flex mx-auto justify-content-center">
+							<form method="GET" action="{{ path('article_search') }}" class="search-box d-flex flex-row">
+								<input id="search-book-first" type="text" placeholder="Rechercher" name="search" aria-label="search" class="form-control">
+								<button type="submit" class="bg-black3 ms-4 mt-5">
+									<i class="fs-2 ms-5 text-light fa-solid fa-magnifying-glass"></i>
+								</button>
+							</form>
+						</div>
+						<div class="mx-auto d-inline-block d-none my-4 p-2" id="search-overlay-library-first">
+							<p class="text-light my-auto">Recherche possible par
+								<span class="italic fw-bold">titre</span>
+								et
+								<span class="italic fw-bold">prix</span>.</p>
+						</div>
+
+					</div>
+
+				</div>
+
+			{% endif %}
+
+			{% set sliderCounter = 1 %}
+
+			{% for article in articles %}
+				{% if article.type == 'Logo' %}
+
+					<div id="global-view" class="row">
+
+						<div id="global">
+
+							<div id="carouselExampleControls-{{ sliderCounter }}" class="carousel slide" data-bs-ride="carousel">
+								<div class="carousel-inner">
+									{% for index, image in article.images %}
+										<div class="carousel-item {% if index == 0 %}active{% endif %}">
+											<img class="img-fluid image_style" src="{{ asset('Images/Articles/' ~ image) }}">
+										</div>
+									{% endfor %}
+								</div>
+								<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Précédent</span>
+								</button>
+								<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Suivant</span>
+								</button>
+							</div>
+							{% set sliderCounter = sliderCounter + 1 %}
+
+							<div class="d-flex mt-5 justify-content-center">
+								<p class="text-light bg-black4 p-2 w-50 text-left ms-3">
+									{% if article.title is not null %}
+										<span class="fw-bold fst-italic">{{ article.title }}</span><br>
+									{% endif %}
+								</p>
+							</div>
+
+							<div class="d-flex flex-column flex-lg-row justify-content-center my-5">
+
+								<a class="link mx-auto mx-lg-0 ms-lg-3 me-lg-3" href="{{ path('commande', {'id': article.id }) }}">
+									<i class="fa-solid fa-basket-shopping me-2"></i>Commander</a>
+
+								<a class="link mx-auto mx-lg-0 me-lg-3" href="{{ path('article_view', {'id': article.id }) }}">
+									<i class="fa-solid fa-comment me-2"></i>Commentaires</a>
+
+								<a class="link mx-auto mx-lg-0 me-lg-3" href="{{ path('add_fav', {'id': article.id, 'userId': app.user.id }) }}">
+									<i class="fa-regular fa-heart me-2"></i>Ajouter favori</a>
+
+
+								{% if is_granted('ROLE_ADMIN') %}
+
+									{# <a class="link text-danger fw-bold" href="{{ path('delete_article', {'id': article.id, csrf_token: csrf_token('delete_article_' ~ article.id ) }) }}"><i class="fa-solid fa-trash me-2"></i>Supprimer</a> #}
+
+									<a href="{{ path('edit_article', {'id': article.id}) }}" class="fw-bold mx-auto mx-lg-0 text-warning link">
+										<i class="fa-solid fa-pen me-2"></i>Modifier</a>
+
+
+								{% endif %}
+
+							</div>
+
+							{# <hr class="text-center text-black w-50 mx-auto me-lg-auto ms-lg-5"> #}
+
+						</div>
+
+					</div>
+
+				{% endif %}
+
+			{% endfor %}
+
+			{% if articles is not empty %}
+
+				<div class="row">
+
+					<div class="col-12 my-3 text-center">
+
+						<div class="d-inline-block">
+							{{ knp_pagination_render(articles) }}
+						</div>
+
+					</div>
+
+				</div>
+
+			{% endif %}
+
+		</div>
+
+	</div>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+{% block header %}Profil{% endblock %}
+
+{% block body %}
+
+  <div class="mt-4">
+
+    <div class="d-flex justify-content-center my-3">
+      <p class="text-light text-center">Adresse e-mail: {{ app.user.email }}</p>
+    </div>
+    <div class="d-flex justify-content-center my-3">
+      <p class="text-light text-center">Prénom: {{ app.user.firstname }}</p>
+    </div>
+    <div class="d-flex justify-content-center my-3">
+      <p class="text-light text-center">Nom: {{ app.user.lastname }}</p>
+    </div>
+    <div class="d-flex justify-content-center my-3">
+      <p class="text-light text-center">Adresse postale: {{ app.user.adress }}</p>
+    </div>
+    <div class="d-flex justify-content-center my-3">
+      <p class="text-light text-center">Code postal: {{ app.user.postalcode }}</p>
+    </div>
+    <div class="d-flex justify-content-center my-3">
+      <p class="text-light text-center">Ville: {{ app.user.city }}</p>
+    </div>
+    <div class="d-flex justify-content-center my-3">
+      <p class="text-light text-center">Mot de passe: ••••••••</p>
+    </div>
+
+    <div class="my-4 d-flex justify-content-center">
+      <a class="link" class="text-decoration-none" href="{{ path('edit_profil', {'id': user.id}) }}">Modifier le profil</a>
+    </div>
+
+  </div>
+
+{% endblock %}

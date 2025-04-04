@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annonce{% endblock %}
+{% block header %}Annonce{% endblock %}
+
+{% block body %}
+
+  <div class="mt-4"></div>
+
+  {{ form_start( add_annonce_form ) }}
+
+  {{ form_row( add_annonce_form.title ) }}
+
+  {{ form_row( add_annonce_form.message ) }}
+
+  <p class="text-light text-center">Image de l'annonce</p>
+
+  {{ form_row( add_annonce_form.image, {'attr': {'class': 'file-upload'}}) }}
+
+  {{ form_errors( add_annonce_form ) }}
+
+  {{ form_row( add_annonce_form.save ) }}
+
+  {{ form_end( add_annonce_form ) }}
+
+{% endblock %}

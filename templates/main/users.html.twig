@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Utilisateurs{% endblock %}
+{% block header %}Utilisateurs{% endblock %}
+
+{% block body %}
+
+    {% for user in users %}
+
+    <div class="my-5 mt-4 bg-black2 w-30 row mx-auto">
+
+        <p class="text-light fs-5 mt-5 text-center"><span class="mx-2">Prénom</span></p>
+        <p class="text-light text-center">{{ user.firstname }}</p>
+		<hr class="text-light mx-auto w-25">
+        <p class="text-light fs-5 text-center"><span class="mx-2">Nom</span></p>
+        <p class="text-light text-center">{{ user.lastname }}</p>
+		<hr class="text-light mx-auto w-25">
+        <p class="text-light fs-5 text-center"><span class="mx-2">Adresse postale</span></p>
+        <p class="text-light text-center">{{ user.adress }}</p>
+		<hr class="text-light mx-auto w-25">
+        <p class="text-light fs-5 text-center"><span class="mx-2">Code postal</span></p>
+        <p class="text-light text-center">{{ user.postalcode }}</p>
+		<hr class="text-light mx-auto w-25">
+        <p class="text-light fs-5 text-center"><span class="mx-2">Ville</span></p>
+        <p class="text-light text-center">{{ user.city }}</p>
+		<hr class="text-light mx-auto w-25">
+        {% if "ROLE_ADMIN" in user.roles %}
+        <p class="text-light fs-5 text-center"><span class="mx-2">Rôle</span></p>
+        <p class="text-light text-center">Modérateur</p>
+        {% elseif "ROLE_USER" in user.roles %}
+        <p class="text-light fs-5 text-center"><span class="mx-2">Rôle</span></p>
+        <p class="text-light text-center">Utilisateur/Membre</p>
+        {% endif %}
+
+        <div class="d-flex mt-4 justify-content-center mb-5">
+
+            <a class="me-3 link text-decoration-none" href="{{ path('delete_user', {'id': user.id, csrf_token: csrf_token('delete_user_' ~ user.id ) }) }}">Supprimer le compte</a>
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+
+<p class="mt-6 col-12 text-center text-light bg-none">Aucun utilisateur à afficher.</p>
+
+{% endfor %}
+
+{% endblock %}

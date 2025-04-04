@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Favoris
+{% endblock %}
+{% block header %}Favoris
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+
+		<div class="col-12 col-md-8 mx-auto">
+
+			<div id="global-view" class="row">
+
+				{% for favori in favoris %}
+
+					<div id="global">
+
+						<div class="auto mt-5" style="border-radius: 3rem;">
+							<ul class="image" id="gauche">
+								{% for image in favori.article.images %}
+									<li><img class="img-fluid image_style" src="{{ asset('Images/Articles/' ~ image) }}"></li>
+								{% endfor %}
+							</ul>
+						</div>
+
+						<div id="droite" class="d-flex flex-column mt-5 justify-content-center">
+							<p class="text-light bg-black4 p-2 w-50 text-left ms-3">
+								<span class="fw-bold fst-italic">{{ favori.article.title }}</span><br>
+								<span class="fw-bold">{{ favori.article.price }}
+									€</span>
+							</p>
+						</div>
+
+						<div class="d-flex flex-column flex-lg-row justify-content-left my-5">
+
+							<a class="link mx-auto mx-lg-0 ms-lg-3 me-lg-3" href="{{ path('commande', {'id': favori.article.id }) }}">
+								<i class="fa-solid fa-basket-shopping me-2"></i>Commander</a>
+
+							<a class="link mx-auto mx-lg-0 me-lg-3" href="{{ path('article_view', {'id': favori.article.id }) }}">
+								<i class="fa-solid fa-comment me-2"></i>Commentaires</a>
+
+							<a class="link mx-auto mx-lg-0 me-lg-3" href="{{ path('del_fav', {'id': favori.id }) }}"><i class="fa-solid fa-heart-crack me-2"></i>Retirer favori</a>
+
+
+							{% if is_granted('ROLE_ADMIN') %}
+
+								{# <a class="link text-danger fw-bold" href="{{ path('delete_article', {'id': favori.article.id, csrf_token: csrf_token('delete_article_' ~ favori.article.id ) }) }}"><i class="fa-solid fa-trash me-2"></i>Supprimer</a> #}
+
+								<a href="{{ path('edit_article', {'id': favori.article.id}) }}" class="fw-bold mx-auto mx-lg-0 text-warning link">
+									<i class="fa-solid fa-pen me-2"></i>Modifier</a>
+
+							</div>
+
+						{% endif %}
+
+					</div>
+
+					<hr class="text-center text-black w-50 mx-auto me-lg-auto ms-lg-5">
+
+			{% else %}
+
+				</div>
+
+				<div class="row">
+					<p class="my-5 col-12 text-center text-light bg-none">Aucun favori.</p>
+				</div>
+
+			{% endfor %}
+
+		</div>
+	</div>
+
+{% endblock %}

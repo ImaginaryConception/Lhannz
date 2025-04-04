@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Refuser{% endblock %}
+{% block header %}Refuser{% endblock %}
+
+{% block body %}
+
+  <div class="mt-4"></div>
+
+  {{ form_start( refus_form ) }}
+
+  {{ form_row( refus_form.reason) }}
+
+  {{ form_errors( refus_form ) }}
+
+  {{ form_row( refus_form.save ) }}
+
+  {{ form_end( refus_form ) }}
+
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panier
+{% endblock %}
+{% block header %}Panier
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+
+		<div class="col-12 col-md-8 mx-auto">
+
+			<div id="global-view" class="row w-95 mx-auto">
+
+				{% set sliderCounter = 1 %}
+
+				{% for my_game in my_games %}
+
+					<div id="global">
+
+						<div id="gauche" class="mt-5" style="border-radius: 3rem;">
+							<ul class="image" id="view-photo">
+								{% if my_game.article.images|length > 0 %}
+									<li><img class="img-fluid image_style2" src="{{ asset('Images/Articles/' ~ my_game.article.images[0]) }}"></li>
+								{% endif %}
+							</ul>
+						</div>
+
+						<div id="droite" class="d-flex flex-column mt-5 justify-content-center">
+							<p class="text-light bg-black4 p-2 w-50 text-left ms-3">
+								{% if my_game.article.title is not null %}
+									<span class="fw-bold fst-italic">{{ my_game.article.title }}</span><br>
+								{% endif %}
+								<span class="fw-bold">Type:</span>
+								{{ my_game.article.type }}
+							</p>
+						</div>
+
+						<p class="text-center fs-5 text-light fw-bold">{{ my_game.status }}</p>
+
+						<hr class="text-center text-light w-25 fw-bold mx-auto">
+
+						{% if my_game.status == 'Status: En attente de votre paiement.' %}
+
+							<div class="d-flex justify-content-center">
+								<a class="link mx-auto fw-bold" href="https://paypal.me/lhannz?country.x=FR&locale.x=fr_FR" target="_blank">
+									<i class="fa-sharp fa-solid fa-cart-shopping me-2"></i>Acheter</a>
+							</div>
+							<p class="text-center mx-auto w-75 text-light fw-bold p-1" style="font-size: 0.8rem;">Veuillez noter que la commande ne sera prise en compte qu'après réception du paiement. Vous disposez d'un délai de
+								<span class="text-warning">3 jours</span>
+								pour effectuer votre paiement. Si nous n'avons pas reçu votre paiement à l'issue de ce délai, votre commande sera annulée. Après avoir effectué votre paiement, veuillez patienter pendant le traitement de votre commande.</p>
+
+							<div class="d-flex justify-content-left mb-5" id="btn-row">
+
+								<a class="link mx-auto" href="{{ path('cancelCommande', {'id': my_game.id }) }}">
+									<i class="fa-solid fa-cancel me-2"></i>Annuler</a>
+
+							</div>
+						{% elseif my_game.status == 'Status: Payé.' %}
+
+							<div id="carouselExampleControls-{{ sliderCounter }}" class="carousel slide" data-bs-ride="carousel">
+								<div class="carousel-inner">
+									{% for index, image in my_game.article.images %}
+										<div class="carousel-item {% if index == 0 %}active{% endif %}">
+											<img class="img-fluid image_style" src="{{ asset('Images/Articles/' ~ image) }}">
+										</div>
+									{% else %}
+										<p class="text-light text-center mx-auto">Aucune image n'a été partagée.</p>
+									{% endfor %}
+								</div>
+								<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Précédent</span>
+								</button>
+								<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Suivant</span>
+								</button>
+							</div>
+							{% set sliderCounter = sliderCounter + 1 %}
+
+							<p class="text-center mx-auto w-75 text-warning fw-bold fs-5 bg-black4">Après avoir reçu votre colis, veuillez le confirmer en cliquant sur le bouton "Confirmer la réception".</p>
+							<div class="d-flex justify-content-center">
+								<a class="link mx-auto fw-bold mb-5" href="{{ path('confirmation', {'id': my_game.id }) }}">
+									<i class="fa-sharp fa-solid fa-circle-check me-2"></i>Confirmer la réception</a>
+							</div>
+
+						{% elseif my_game.status == 'Status: Paiement incomplet.' %}
+
+							<p class="text-center mx-auto w-75 text-light fw-bold mt-5 p-1" style="font-size: 0.8rem;">Nous avons constaté que le paiement effectué sur PayPal est incomplet. Veuillez compléter la somme restante afin que nous puissions procéder à l'expédition de votre colis.</p>
+
+							<div class="d-flex justify-content-center">
+								<a class="link mx-auto fw-bold" href="https://paypal.me/lhannz?country.x=FR&locale.x=fr_FR" target="_blank">
+									<i class="fa-sharp fa-solid fa-cart-shopping me-2"></i>Acheter</a>
+							</div>
+							<p class="text-center mx-auto w-75 text-light fw-bold mt-5 p-1" style="font-size: 0.8rem;">Veuillez noter que la commande ne sera prise en compte qu'après réception du paiement. Vous disposez d'un délai de
+								<span class="text-warning">3 jours</span>
+								pour effectuer votre paiement. Si nous n'avons pas reçu votre paiement à l'issue de ce délai, votre commande sera annulée. Après avoir effectué votre paiement, veuillez patienter pendant le traitement de votre commande.</p>
+
+						{% elseif my_game.status == 'Status: Reçu.' %}
+
+							<div id="carouselExampleControls-{{ sliderCounter }}" class="carousel slide" data-bs-ride="carousel">
+								<div class="carousel-inner">
+									{% for index, image in my_game.article.images %}
+										<div class="carousel-item {% if index == 0 %}active{% endif %}">
+											<img class="img-fluid image_style" src="{{ asset('Images/Articles/' ~ image) }}">
+										</div>
+									{% else %}
+										<p class="text-light text-center mx-auto">Aucune image n'a été partagée.</p>
+									{% endfor %}
+								</div>
+								<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Précédent</span>
+								</button>
+								<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls-{{ sliderCounter }}" data-bs-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Suivant</span>
+								</button>
+							</div>
+							{% set sliderCounter = sliderCounter + 1 %}
+
+						{% elseif my_game.status == 'Status: Annulé.' %}
+
+							<p class="text-center mx-auto w-75 text-light fw-bold mt-5 p-1" style="font-size: 0.8rem;">Le délai imparti de
+								<span class="text-warning">3 jours</span>
+								est désormais écoulé et nous n'avons toujours pas reçu votre paiement. Par conséquent, votre commande a été annulée.</p>
+
+						{% endif %}
+
+				{% else %}
+
+					</div>
+
+					<div class="row">
+						<p class="no-my_game.article my-5 col-12 text-center text-light bg-none">Aucun article.</p>
+					</div>
+
+				{% endfor %}
+
+			</div>
+		</div>
+
+	{% endblock %}

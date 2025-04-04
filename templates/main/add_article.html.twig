@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajout d'un article
+{% endblock %}
+
+{% block header %}Ajout
+{% endblock %}
+
+{% block body %}
+
+	<div id="add_article_form" class="row mt-4 mb-5 mx-auto">
+
+		{{ form_start( addarticle_form ) }}
+
+		{{ form_errors( addarticle_form ) }}
+
+		{{ form_row( addarticle_form.title ) }}
+
+		<p class="text-light text-center">Type d'article *</p>
+
+		{{ form_row( addarticle_form.type ) }}
+
+		<p class="text-light text-center">Photos *</p>
+
+		{{ form_row( addarticle_form.images, {'attr': {'class': 'file-upload'}}) }}
+
+		{{ form_row( addarticle_form.save ) }}
+
+		{{ form_end( addarticle_form ) }}
+
+	</div>
+
+{% endblock %}

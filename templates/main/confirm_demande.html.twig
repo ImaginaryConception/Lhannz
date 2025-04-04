@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation
+{% endblock %}
+
+{% block header %}Confirmation
+{% endblock %}
+
+{% block body %}
+
+	<div id="add_article_form" class="row mt-4 mb-5 mx-auto">
+
+		{{ form_start( confirm_form ) }}
+
+		{{ form_errors( confirm_form ) }}
+
+		{{ form_row( confirm_form.price ) }}
+
+		<p class="text-light fs-5 text-center">Ne pas ajouter le "€"</p>
+
+		<p class="text-light text-center">Photos *</p>
+
+		{{ form_row( confirm_form.images, {'attr': {'class': 'file-upload'}}) }}
+
+		{{ form_row( confirm_form.save ) }}
+
+		{{ form_end( confirm_form ) }}
+
+	</div>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes propositions{% endblock %}
+{% block header %}Mes propositions{% endblock %}
+
+{% block body %}
+
+<div class="d-flex bg-black2 w-30 mx-auto flex-column text-center justify-content-center mt-6">
+	<a class="link" href="{{ path('mes_jeux') }}">Propositions de jeux</a>
+	<hr class="mx-auto text-center text-light w-25">
+	<a class="link" href="{{ path('mes_concepts') }}">Propositions de concepts/idées sub goal</a>
+</div>
+
+{% endblock %}

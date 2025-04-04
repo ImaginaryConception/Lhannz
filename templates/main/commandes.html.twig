@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commandes
+{% endblock %}
+{% block header %}Commandes
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+
+	<div class="col-12 col-md-8 mx-auto">
+
+		<div id="global-view" class="row">
+
+			{% for proposition_jeu in propositions_jeux %}
+
+				<div id="global">
+
+					<div id="gauche" class="mt-5" style="border-radius: 3rem;">
+						<ul class="image" id="view-photo">
+							{% if proposition_jeu.article.images|length > 0 %}
+								<li><img class="img-fluid image_style2" src="{{ asset('Images/Articles/' ~ proposition_jeu.article.images[0]) }}"></li>
+							{% endif %}
+						</ul>
+					</div>
+
+					<div id="droite" class="d-flex flex-column mt-5 justify-content-center">
+						<p class="text-light bg-black4 p-2 w-50 text-left ms-3">
+							{% if proposition_jeu.article.title is not null %}
+								<span class="fw-bold fst-italic">{{ proposition_jeu.article.title }}</span><br>
+							{% endif %}
+							<span class="fw-bold">Type:</span>
+							{{ proposition_jeu.article.type }}
+						</p>
+					</div>
+
+					{% if proposition_jeu.status == 'Status: En attente de votre paiement.' %}
+						<p class="text-center mx-auto w-75 text-light fw-bold p-1" style="font-size: 0.8rem;">En attente du paiement du client. Celui-ci effectuera un virement sur
+							<span class="text-warning">PayPal</span>. Si le montant reçu sur PayPal correspond au prix annoncé, vous pourrez alors envoyer le colis selon les informations du client ci-dessous et cliquer sur
+							<span class="text-warning">"Confirmer l'envoi"</span>. Dans le cas contraire, si le client n'a pas envoyé l'intégralité du montant, veuillez cliquer sur
+							<span class="text-warning">"Le paiement n'est pas complet"</span>, puis contactez le client à l'adresse e-mail suivante:
+							<span class="text-warning">{{ proposition_jeu.user.email }}</span>
+							pour l'informer que le colis ne pourra pas être envoyé car le montant reçu n'est pas complet.<span class="text-warning">
+								Exemple: "Bonjour, nous avons constaté que le paiement effectué sur PayPal pour votre achat sur lhannz.fr est incomplet. Veuillez compléter la somme restante afin que nous puissions procéder à l'expédition de votre colis. Merci.</span>
+							Enfin, si vous n'avez toujours rien reçu sur PayPal, veuillez ne rien faire et attendre. Si vous n'avez rien reçu au bout de
+							<span class="text-warning">3 jours</span>, vous pouvez cliquer sur le bouton
+							<span class="text-warning">"Annuler la commande"</span>.</p>
+
+						<div class="mb-4 d-flex w-75 flex-column justify-content-center mx-auto">
+							<p class="text-center text-light fs-5 w-75 mx-auto">
+								<span class="fw-bold">Adresse e-mail:</span><br>{{ proposition_jeu.user.email }}</p>
+							<p class="text-center text-light fs-5 w-75 mx-auto">
+								<span class="fw-bold">Prénom:</span><br>{{ proposition_jeu.user.firstname }}</p>
+							<p class="text-center text-light fs-5 w-75 mx-auto">
+								<span class="fw-bold">Nom:</span><br>{{ proposition_jeu.user.lastname }}</p>
+							<p class="text-center text-light fs-5 w-75 mx-auto">
+								<span class="fw-bold">Adresse postale:</span><br>{{ proposition_jeu.user.adress }}</p>
+						</div>
+
+						<div class="mb-5 d-flex flex-column justify-content-center mx-auto flex-xl-row mb-3">
+							<a class="link mx-xxl-0 me-xxl-4 mx-auto" href="{{ path('confirm', {'id': proposition_jeu.id, csrf_token: csrf_token('confirm_' ~ proposition_jeu.id ) }) }}">
+								<i class="fa-solid fa-circle-check me-1"></i>Confirmer l'envoi</a>
+							<a class="link mx-xxl-0 me-xxl-4 mx-auto" href="{{ path('manquement', {'id': proposition_jeu.id, csrf_token: csrf_token('manquement_' ~ proposition_jeu.id ) }) }}">
+								<i class="fa-solid fa-xmark me-1"></i>Le paiement n'est pas complet</a>
+							<a class="link mx-xxl-0 mx-auto" href="{{ path('annulation', {'id': proposition_jeu.id, csrf_token: csrf_token('annulation_' ~ proposition_jeu.id ) }) }}">
+								<i class="fa-solid fa-xmark me-1"></i>Annuler la commande</a>
+						</div>
+
+					{% elseif proposition_jeu.status == 'Status: Payé.' %}
+
+						<p class="text-center text-warning fs-5 bg-black4 w-75 mx-auto fw-bold">Nous vous informerons ici dès que nous recevrons la confirmation de réception du colis de la part du client.</p>
+
+					{% elseif proposition_jeu.status == 'Status: Reçu.' %}
+
+						<p class="text-center text-success fs-5 bg-black4 w-50 mx-auto fw-bold">Le client a confirmé la réception du colis.</p>
+
+					{% elseif proposition_jeu.status == 'Status: Paiement incomplet.' %}
+
+							<p class="text-center mx-auto w-75 text-light fw-bold p-1" style="font-size: 1rem;">Le client a été informé que le paiement qu'il a effectué n'est pas complet. Une fois le paiement complété, vous pourrez cliquer sur le bouton
+								<span class="fs-4 text-warning">"Confirmer l'envoi"</span>
+								pour procéder à l'expédition du colis. Si le paiement n'est pas complété dans les délais impartis, vous pourrez annuler la commande en cliquant sur le bouton
+								<span class="fs-4 text-warning">"Annuler la commande"</span>.</p>
+
+							<div class="mb-4 d-flex flex-column justify-content-center mx-auto flex-md-row mb-3">
+								<a class="link" href="{{ path('confirm', {'id': proposition_jeu.id, csrf_token: csrf_token('confirm_' ~ proposition_jeu.id ) }) }}">
+									<i class="fa-solid fa-circle-check me-1"></i>Confirmer l'envoi</a>
+								<a class="link" href="{{ path('annulation', {'id': proposition_jeu.id, csrf_token: csrf_token('annulation_' ~ proposition_jeu.id ) }) }}">
+									<i class="fa-solid fa-xmark me-1"></i>Annuler la commande</a>
+							</div>
+
+						{% elseif proposition_jeu.status == 'Status: Annulé.' %}
+
+							<p class="text-center text-danger fs-5 bg-black4 w-25 mx-auto fw-bold">La commande a été annulée.</p>
+
+						{% endif %}
+
+					</div>
+
+					<hr class="text-center text-light w-25 mx-auto">
+
+			{% else %}
+
+				</div>
+
+				<div class="row">
+					<p class="no-my_game.article my-5 col-12 text-center text-light bg-none">Aucune commande en cours.</p>
+				</div>
+
+			{% endfor %}
+
+		</div>
+	</div>
+{% endblock %}
