@@ -11,6 +11,7 @@ parameters:
     app.user.image.allowed_mime_types:
         - 'image/jpeg'
         - 'image/png'
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
 
 services:
     # default configuration for services in *this* file

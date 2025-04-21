@@ -100,7 +100,12 @@
 								pour effectuer votre paiement. Si nous n'avons pas reçu votre paiement à l'issue de ce délai, votre commande sera annulée. Après avoir effectué votre paiement, veuillez patienter pendant le traitement de votre commande.</p>
 							<div class="d-flex justify-content-center">
 								<a class="link mx-auto fw-bold mb-3" href="https://paypal.me/lhannz?country.x=FR&locale.x=fr_FR" target="_blank">
-									<i class="fa-sharp fa-solid fa-cart-shopping me-2"></i>Acheter</a>
+									<i class="fa-brands fa-paypal me-2"></i>Acheter sur PayPal</a>
+							</div>
+							<div class="d-flex justify-content-center mb-3">
+								<a class="link mx-auto fw-bold" onclick="event.stopPropagation()" style="cursor: pointer" href="{{ path('pay', {'project': my_game.id }) }}">
+									<i class="fa-sharp fa-solid fa-cart-shopping me-2"></i>Payer par carte bancaire
+								</a>
 							</div>
 
 						{% elseif my_game.status == 'Status: Payé.' %}

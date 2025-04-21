@@ -41,15 +41,20 @@
 
 						<hr class="text-center text-light w-25 fw-bold mx-auto">
 
-						{% if my_game.status == 'Status: En attente de votre paiement.' %}
+						{% if my_game.status == 'Status: prêt, en attente de votre paiement.' %}
 
 							<div class="d-flex justify-content-center">
 								<a class="link mx-auto fw-bold" href="https://paypal.me/lhannz?country.x=FR&locale.x=fr_FR" target="_blank">
-									<i class="fa-sharp fa-solid fa-cart-shopping me-2"></i>Acheter</a>
+									<i class="fa-sharp fa-solid fa-cart-shopping me-2"></i>Acheter sur PayPal</a>
 							</div>
-							<p class="text-center mx-auto w-75 text-light fw-bold p-1" style="font-size: 0.8rem;">Veuillez noter que la commande ne sera prise en compte qu'après réception du paiement. Vous disposez d'un délai de
+							<div class="d-flex justify-content-center mb-3">
+								<a class="link mx-auto fw-bold" onclick="event.stopPropagation()" style="cursor: pointer" href="{{ path('pay', {'project': my_game.id }) }}">
+									<i class="fa-sharp fa-solid fa-cart-shopping me-2"></i>Payer par carte bancaire ({{ my_game.price }}€)
+								</a>
+							</div>
+							{# <p class="text-center mx-auto w-75 text-light fw-bold p-1" style="font-size: 0.8rem;">Veuillez noter que la commande ne sera prise en compte qu'après réception du paiement. Vous disposez d'un délai de
 								<span class="text-warning">3 jours</span>
-								pour effectuer votre paiement. Si nous n'avons pas reçu votre paiement à l'issue de ce délai, votre commande sera annulée. Après avoir effectué votre paiement, veuillez patienter pendant le traitement de votre commande.</p>
+								pour effectuer votre paiement. Si nous n'avons pas reçu votre paiement à l'issue de ce délai, votre commande sera annulée. Après avoir effectué votre paiement, veuillez patienter pendant le traitement de votre commande.</p> #}
 
 							<div class="d-flex justify-content-left mb-5" id="btn-row">
 

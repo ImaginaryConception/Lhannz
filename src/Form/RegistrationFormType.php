@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use VictorPrdh\RecaptchaBundle\Form\ReCaptchaType;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -123,6 +124,12 @@ class RegistrationFormType extends AbstractType
                         'pattern' => "/^.{8,}$/u",
                         'message' => 'Votre mot de passe doit contenir une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial.',
                     ]),
+                ],
+            ])
+            ->add('recaptcha', ReCaptchaType::class, [
+                'mapped' => false,
+                'attr' => [
+                    'class' => 'd-flex justify-content-center align-items-center mx-auto',
                 ],
             ])
             ->add('save', SubmitType::class, [

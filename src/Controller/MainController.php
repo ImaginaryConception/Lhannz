@@ -11,6 +11,7 @@ use App\Entity\Comment;
 use App\Entity\Demande;
 use App\Entity\Commande;
 use Square\SquareClient;
+use Stripe\StripeClient;
 use App\Form\RefusFormType;
 use Square\Api\PaymentsApi;
 use App\Form\AnnonceFormType;
@@ -23,6 +24,7 @@ use App\Form\AddArticleFormType;
 use App\Form\AddCommentFormType;
 use App\Form\EditProfilFormType;
 use Square\Models\CreatePaymentRequest;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -30,7 +32,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -78,6 +82,86 @@ class MainController extends AbstractController
             'favoris' => $favoris,
             'annonces' => $annonces,
         ]);
+    }
+
+    #[Route('/success', name: 'success')]
+    public function success()
+    {
+        return $this->render('main/success.html.twig');
+    }
+
+    #[Route('/error', name: 'error')]
+    public function error()
+    {
+        return $this->render('main/error.html.twig');
+    }
+
+    #[Route('/create-stripe-session/{project}', name: 'pay')]
+    public function stripeCheckout(EntityManagerInterface $em, $project)
+    {
+        $project = $em->getRepository(Demande::class)->findOneBy(['id' => $project]);
+
+        if (!$project) {
+            $this->addFlash('error', 'La commande n\'a pas été trouvé.');
+            return $this->redirectToRoute('home');
+        }
+
+        $paymentStripe[] = [
+            'price_data' => [
+                'currency' => 'eur',
+                'product_data' => [
+                    'name' => 'Project',
+                ],
+                'unit_amount' => $project->getPrice() * 100,
+            ],
+            'quantity' => 1,
+        ];
+
+        $stripePrivateKey = new StripeClient($_ENV['STRIPE_SECRET_KEY']);
+        // Stripe::setApiKey($stripePrivateKey);
+
+        $checkout_session = $stripePrivateKey->checkout->sessions->create([
+            'line_items' => $paymentStripe,
+            'mode' => 'payment',
+           'success_url' => $this->generateUrl('success', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'cancel_url' => $this->generateUrl('error', [], UrlGeneratorInterface::ABSOLUTE_URL),
+        ]);
+
+        return new RedirectResponse($checkout_session->url);
+    }
+
+    #[Route('/create-stripe-session-commande/{project}', name: 'pay')]
+    public function stripeCommandeCheckout(EntityManagerInterface $em, $project)
+    {
+        $project = $em->getRepository(Commande::class)->findOneBy(['id' => $project]);
+
+        if (!$project) {
+            $this->addFlash('error', 'La commande n\'a pas été trouvé.');
+            return $this->redirectToRoute('home');
+        }
+
+        $paymentStripe[] = [
+            'price_data' => [
+                'currency' => 'eur',
+                'product_data' => [
+                    'name' => 'Project',
+                ],
+                'unit_amount' => $project->getPrice() * 100,
+            ],
+            'quantity' => 1,
+        ];
+
+        $stripePrivateKey = new StripeClient($_ENV['STRIPE_SECRET_KEY']);
+        // Stripe::setApiKey($stripePrivateKey);
+
+        $checkout_session = $stripePrivateKey->checkout->sessions->create([
+            'line_items' => $paymentStripe,
+            'mode' => 'payment',
+           'success_url' => $this->generateUrl('success', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'cancel_url' => $this->generateUrl('error', [], UrlGeneratorInterface::ABSOLUTE_URL),
+        ]);
+
+        return new RedirectResponse($checkout_session->url);
     }
 
     #[Route('/mentions-legales/', name: 'mentions_legales')]
@@ -1601,25 +1685,22 @@ class MainController extends AbstractController
     #[ParamConverter('commande', options: ['mapping' => ['id' => 'id']])]
     public function confirm(Commande $commande, Request $request, ManagerRegistry $doctrine): Response
     {
+        $estimatedBudget = $request->query->get('estimatedBudget');
 
-        if (!$this->isCsrfTokenValid('confirm_' . $commande->getId(), $request->query->get("csrf_token"))) {
-
-            $this->addFlash('error', 'Token sécurité invalide, veuillez réessayer!');
-        } else {
-
-
-            $em = $doctrine->getManager();
-
-            $commande->setStatus('Status: Payé.');
-
-            $em->persist($commande);
-
-            $em->flush();
-
-            $this->addFlash('success', 'L\'envoi a été confirmé avec succès!');
-
+        if (!$estimatedBudget) {
+            $this->addFlash('error', 'Le prix estimé est requis!');
             return $this->redirectToRoute('commandes');
         }
+
+        $em = $doctrine->getManager();
+
+        $commande->setPrice((int)$estimatedBudget);
+        $commande->setStatus('Status: Payé.');
+
+        $em->persist($commande);
+        $em->flush();
+
+        $this->addFlash('success', 'L\'envoi a été confirmé avec succès!');
 
         return $this->redirectToRoute('commandes');
     }
@@ -1971,6 +2052,67 @@ class MainController extends AbstractController
         $this->addFlash('success', 'Favori retiré avec succès !');
 
         return $this->redirectToRoute('favoris');
+    }
+
+    #[Route('/confirmer-commande/{id}/', name: 'confirm_command')]
+    #[ParamConverter('commande', options: ['mapping' => ['id' => 'id']])]
+    public function confirmCommand(Commande $commande, Request $request, ManagerRegistry $doctrine): Response
+    {
+
+        $repository2 = $doctrine->getRepository(Commande::class);
+
+        $my_games = $repository2->findBy(['user' => $this->getUser()]);
+
+        if ($this->getUser()) {
+
+            $my_games = $repository2->createQueryBuilder('c')
+                ->select('c')
+                ->where('c.user = :id')
+                ->setParameter('id', $this->getUser()->getId())
+                ->getQuery()
+                ->execute();
+        }
+
+        $repository3 = $doctrine->getRepository(Favori::class);
+
+        $favoris = $repository3->findBy(['user' => $this->getUser()]);
+
+        if ($this->getUser()) {
+
+            $favoris = $repository3->createQueryBuilder('f')
+                ->select('f')
+                ->where('f.user = :id')
+                ->setParameter('id', $this->getUser()->getId())
+                ->getQuery()
+                ->execute();
+        }
+
+        $form = $this->createForm(ConfirmFormType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em = $doctrine->getManager();
+
+            $commande
+                ->setStatus('Status: prêt, en attente de votre paiement.')
+                ->setPrice($form->get('price')->getData());
+
+            $em->persist($commande);
+
+            $em->flush();
+
+            $this->addFlash('success', 'La commande a été confirmée avec succès!');
+
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('main/confirm_demande.html.twig', [
+            'confirm_form' => $form->createView(),
+            'my_games' => $my_games,
+            'favoris' => $favoris,
+        ]);
     }
 
     #[Route('/confirmer-demande/{id}/', name: 'confirm_demande')]

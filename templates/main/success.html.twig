@@ -1,0 +1,59 @@
+{% set route = app.request.attributes.get('_route')%}
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<!--[if lt IE 9]>
+		    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Lhannz</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+		<link href="https://fonts.googleapis.com/css2?family=Ysabeau&display=swap" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Calligraffitti&family=Open+Sans:wght@800&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="{{ asset('CSS/bootstrap.min.css') }}">
+		<link rel="stylesheet" href="{{ asset('CSS/styles.css') }}">
+		<script src="{{ asset(('JS/bootstrap.bundle.min.js')) }}" defer></script>
+	    <script src="{{ asset(('JS/script.js')) }}" defer></script>
+	</head>
+	<body>
+
+		<div class="container-fluid">
+            <div class="mt-6 min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-red-200 via-white to-red-100 p-6 animate-fade-in">
+                <div class="bg-transparent shadow-2xl rounded-2xl p-10 text-center max-w-md w-full animate-slide-up">
+                    <h1 class="text-3xl font-bold text-light mb-4">Merci pour votre paiement !</h1>
+                    <p class="text-light mb-6">Votre transaction a été effectuée avec succès.</p>
+                    <a href="{{ path('home') }}" class="btn btn-light justify-content-center d-flex mx-auto">Accueil</a>
+                </div>
+            </div>
+		</div>
+        <style>
+            @keyframes fade-in {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes slide-up {
+                from { transform: translateY(40px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            @keyframes pop {
+                0% { transform: scale(0); opacity: 0; }
+                70% { transform: scale(1.2); opacity: 1; }
+                100% { transform: scale(1); }
+            }
+
+            .animate-fade-in {
+                animation: fade-in 0.8s ease-out both;
+            }
+            .animate-slide-up {
+                animation: slide-up 0.6s ease-out both;
+            }
+            .animate-pop {
+                animation: pop 0.5s ease-out both;
+            }
+        </style>
+	</body>
+</html>

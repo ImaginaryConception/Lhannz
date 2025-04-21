@@ -44,6 +44,7 @@ class ConfirmFormType extends AbstractType
             ])
             ->add('images', FileType::class, array(
                 'label' => false,
+                'required' => false,
                 'multiple' => true,
                 'attr' => [
                     'accept' => implode(', ', $this->allowedMimeTypes),

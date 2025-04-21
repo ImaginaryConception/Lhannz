@@ -7,6 +7,28 @@
 
 {% block body %}
 
+<!-- Modal pour saisir le prix estimé -->
+<div class="modal fade" id="estimatedBudgetModal" tabindex="-1" aria-labelledby="estimatedBudgetModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-black4">
+      <div class="modal-header">
+        <h5 class="modal-title text-light" id="estimatedBudgetModalLabel">Saisir le prix</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="estimatedBudgetForm" method="post">
+          <div class="mb-3">
+            <label for="estimatedBudget" class="form-label text-light">Prix (€)</label>
+            <input type="number" class="form-control" id="estimatedBudget" name="estimatedBudget" required>
+            <input type="hidden" id="commandeId" name="commandeId">
+          </div>
+          <button type="submit" class="btn btn-primary">Valider</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row">
 
 	<div class="col-12 col-md-8 mx-auto">
@@ -36,7 +58,7 @@
 					</div>
 
 					{% if proposition_jeu.status == 'Status: En attente de votre paiement.' %}
-						<p class="text-center mx-auto w-75 text-light fw-bold p-1" style="font-size: 0.8rem;">En attente du paiement du client. Celui-ci effectuera un virement sur
+						{# <p class="text-center mx-auto w-75 text-light fw-bold p-1" style="font-size: 0.8rem;">En attente du paiement du client. Celui-ci effectuera un virement sur
 							<span class="text-warning">PayPal</span>. Si le montant reçu sur PayPal correspond au prix annoncé, vous pourrez alors envoyer le colis selon les informations du client ci-dessous et cliquer sur
 							<span class="text-warning">"Confirmer l'envoi"</span>. Dans le cas contraire, si le client n'a pas envoyé l'intégralité du montant, veuillez cliquer sur
 							<span class="text-warning">"Le paiement n'est pas complet"</span>, puis contactez le client à l'adresse e-mail suivante:
@@ -45,7 +67,7 @@
 								Exemple: "Bonjour, nous avons constaté que le paiement effectué sur PayPal pour votre achat sur lhannz.fr est incomplet. Veuillez compléter la somme restante afin que nous puissions procéder à l'expédition de votre colis. Merci.</span>
 							Enfin, si vous n'avez toujours rien reçu sur PayPal, veuillez ne rien faire et attendre. Si vous n'avez rien reçu au bout de
 							<span class="text-warning">3 jours</span>, vous pouvez cliquer sur le bouton
-							<span class="text-warning">"Annuler la commande"</span>.</p>
+							<span class="text-warning">"Annuler la commande"</span>.</p> #}
 
 						<div class="mb-4 d-flex w-75 flex-column justify-content-center mx-auto">
 							<p class="text-center text-light fs-5 w-75 mx-auto">
@@ -59,10 +81,12 @@
 						</div>
 
 						<div class="mb-5 d-flex flex-column justify-content-center mx-auto flex-xl-row mb-3">
-							<a class="link mx-xxl-0 me-xxl-4 mx-auto" href="{{ path('confirm', {'id': proposition_jeu.id, csrf_token: csrf_token('confirm_' ~ proposition_jeu.id ) }) }}">
-								<i class="fa-solid fa-circle-check me-1"></i>Confirmer l'envoi</a>
-							<a class="link mx-xxl-0 me-xxl-4 mx-auto" href="{{ path('manquement', {'id': proposition_jeu.id, csrf_token: csrf_token('manquement_' ~ proposition_jeu.id ) }) }}">
-								<i class="fa-solid fa-xmark me-1"></i>Le paiement n'est pas complet</a>
+							{# <a class="link mx-xxl-0 me-xxl-4 mx-auto" href="#" onclick="openEstimatedBudgetModal('{{ proposition_jeu.id }}')" data-bs-toggle="modal" data-bs-target="#estimatedBudgetModal">
+								<i class="fa-solid fa-circle-check me-1"></i>Renseigner le prix</a> #}
+							<a class="link mx-xxl-0 me-xxl-4 mx-auto" href="{{ path('confirm_command', {'id': proposition_jeu.id, csrf_token: csrf_token('confirm_demande_' ~ proposition_jeu.id ) }) }}">
+								<i class="fa-solid fa-circle-check me-1"></i>Renseigner le prix</a>
+							{# <a class="link mx-xxl-0 me-xxl-4 mx-auto" href="{{ path('manquement', {'id': proposition_jeu.id, csrf_token: csrf_token('manquement_' ~ proposition_jeu.id ) }) }}">
+								<i class="fa-solid fa-xmark me-1"></i>Le paiement n'est pas complet</a> #}
 							<a class="link mx-xxl-0 mx-auto" href="{{ path('annulation', {'id': proposition_jeu.id, csrf_token: csrf_token('annulation_' ~ proposition_jeu.id ) }) }}">
 								<i class="fa-solid fa-xmark me-1"></i>Annuler la commande</a>
 						</div>
@@ -111,4 +135,25 @@
 
 		</div>
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+function openEstimatedBudgetModal(commandeId) {
+    document.getElementById('commandeId').value = commandeId;
+}
+
+document.getElementById('estimatedBudgetForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const commandeId = document.getElementById('commandeId').value;
+    const estimatedBudget = document.getElementById('estimatedBudget').value;
+    
+    if (!estimatedBudget || estimatedBudget <= 0) {
+        alert('Veuillez saisir un prix valide');
+        return;
+    }
+    
+    window.location.href = '{{ path("update_estimated_budget", {"id": "__id__"}) }}'.replace('__id__', commandeId) + '?estimatedBudget=' + estimatedBudget;
+});
+</script>
 {% endblock %}
