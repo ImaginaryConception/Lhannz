@@ -132,6 +132,8 @@
 								<span class="text-warning">3 jours</span>
 								est désormais écoulé et nous n'avons toujours pas reçu votre paiement. Par conséquent, votre commande a été annulée.</p>
 
+						{% elseif my_game.status == 'Status: En attente de confirmation de votre commande.' %}
+
 						{% endif %}
 
 				{% else %}

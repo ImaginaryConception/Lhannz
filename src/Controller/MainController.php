@@ -96,7 +96,7 @@ class MainController extends AbstractController
         return $this->render('main/error.html.twig');
     }
 
-    #[Route('/create-stripe-session/{project}', name: 'pay')]
+    #[Route('/create-stripe-session/{project}', name: 'payDemand')]
     public function stripeCheckout(EntityManagerInterface $em, $project)
     {
         $project = $em->getRepository(Demande::class)->findOneBy(['id' => $project]);
@@ -1654,7 +1654,7 @@ class MainController extends AbstractController
 
             $commande->setArticle($article);
 
-            $commande->setStatus('Status: En attente de votre paiement.');
+            $commande->setStatus('Status: En attente de confirmation de votre commande.');
 
             $entityManager->persist($commande);
 
